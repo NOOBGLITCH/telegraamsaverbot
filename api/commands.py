@@ -3,29 +3,29 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from storage import save_item, get_user_items, get_user_settings, update_user_settings
+from storage import save_item, get_user_settings, update_user_settings
 from processor import process_url, process_text
 from backup import create_export, create_backup
 from .telegram import send_message, send_document
 from datetime import datetime
 import re
 
-async def process_command(update):
+def process_command(update):
     """Process bot commands"""
     command = update.text.split()[0].lower()
     
     if command == "/start":
-        await handle_start(update)
+        handle_start(update)
     elif command == "/help":
-        await handle_help(update)
+        handle_help(update)
     elif command == "/save":
-        await handle_save(update)
+        handle_save(update)
     elif command == "/export":
-        await handle_export(update)
+        handle_export(update)
     elif command == "/backup":
-        await handle_backup(update)
+        handle_backup(update)
 
-async def handle_start(update):
+def handle_start(update):
     """Handle /start command"""
     text = (
         f"🧠 **Welcome to MindVault, {update.first_name}!**\n\n"
@@ -42,7 +42,7 @@ async def handle_start(update):
     )
     send_message(update.chat_id, text)
 
-async def handle_help(update):
+def handle_help(update):
     """Handle /help command"""
     text = (
         "**Commands:**\n"
@@ -61,7 +61,7 @@ async def handle_help(update):
     )
     send_message(update.chat_id, text)
 
-async def handle_save(update):
+def handle_save(update):
     """Handle /save command"""
     parts = update.text.split(maxsplit=1)
     if len(parts) < 2:
@@ -69,13 +69,13 @@ async def handle_save(update):
         return
     
     content = parts[1]
-    await save_content(update, content)
+    save_content(update, content)
 
-async def handle_export(update):
+def handle_export(update):
     """Handle /export command"""
     send_message(update.chat_id, "📦 Creating export...")
     
-    zip_path = await create_export(str(update.from_id))
+    zip_path = create_export(str(update.from_id))
     
     if not zip_path:
         send_message(update.chat_id, "❌ No items to export")
@@ -87,7 +87,7 @@ async def handle_export(update):
     import os
     os.remove(zip_path)
 
-async def handle_backup(update):
+def handle_backup(update):
     """Handle /backup command"""
     args = update.text.split()[1:] if len(update.text.split()) > 1 else []
     
@@ -106,7 +106,7 @@ async def handle_backup(update):
     
     if cmd == "now":
         send_message(update.chat_id, "💾 Creating backup...")
-        zip_path = await create_backup(str(update.from_id))
+        zip_path = create_backup(str(update.from_id))
         if zip_path:
             send_document(update.chat_id, zip_path, "💾 Your MindVault backup")
             import os
@@ -115,19 +115,19 @@ async def handle_backup(update):
             send_message(update.chat_id, "❌ No items to backup")
     
     elif cmd == "on":
-        settings = await get_user_settings(str(update.from_id))
+        settings = get_user_settings(str(update.from_id))
         settings['daily_backup_enabled'] = True
-        await update_user_settings(str(update.from_id), settings)
+        update_user_settings(str(update.from_id), settings)
         send_message(update.chat_id, "✅ Daily backups enabled!")
     
     elif cmd == "off":
-        settings = await get_user_settings(str(update.from_id))
+        settings = get_user_settings(str(update.from_id))
         settings['daily_backup_enabled'] = False
-        await update_user_settings(str(update.from_id), settings)
+        update_user_settings(str(update.from_id), settings)
         send_message(update.chat_id, "❌ Daily backups disabled")
     
     elif cmd == "status":
-        settings = await get_user_settings(str(update.from_id))
+        settings = get_user_settings(str(update.from_id))
         enabled = settings.get('daily_backup_enabled', True)
         last = settings.get('last_backup', 'Never')
         status_text = "✅ ON" if enabled else "❌ OFF"
@@ -136,12 +136,12 @@ async def handle_backup(update):
             f"**Backup Status**\n\nDaily backups: {status_text}\nLast backup: {last}"
         )
 
-async def save_content(update, content):
+def save_content(update, content):
     """Save content helper"""
     is_url = bool(re.match(r'^https?://', content.strip()))
     
     if is_url:
-        data = await process_url(content)
+        data = process_url(content)
     else:
         data = process_text(content)
     
@@ -159,7 +159,7 @@ async def save_content(update, content):
         'timestamp': datetime.now().isoformat()
     }
     
-    success = await save_item(str(update.from_id), item)
+    success = save_item(str(update.from_id), item)
     
     if success:
         tags_str = ' '.join(data['tags'])

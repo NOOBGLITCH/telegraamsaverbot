@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from .commands import save_content
 from .telegram import send_message
 
-async def process_message(update):
+def process_message(update):
     """Process text messages"""
     content = update.text
     
@@ -17,9 +17,9 @@ async def process_message(update):
         elif update.forward_from_chat:
             content += f"\n\nForwarded from: {update.forward_from_chat.get('title', 'Unknown')}"
     
-    await save_content(update, content)
+    save_content(update, content)
 
-async def process_photo(update):
+def process_photo(update):
     """Process photo messages"""
     send_message(
         update.chat_id,

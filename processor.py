@@ -1,7 +1,6 @@
 """Content processor - URL metadata extraction and tagging"""
 import re
-import aiohttp
-import asyncio
+import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, unquote
@@ -22,54 +21,40 @@ KEYWORD_TAGS = {
     "database": "#database", "api": "#api", "security": "#security"
 }
 
-_session = None
-
-async def get_session():
-    """Get or create HTTP session"""
-    global _session
-    if _session is None or _session.closed:
-        _session = aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=10),
-            headers={'User-Agent': 'Mozilla/5.0'}
-        )
-    return _session
-
-async def process_url(url: str) -> dict:
+def process_url(url: str) -> dict:
     """Process URL and extract metadata"""
     try:
-        session = await get_session()
-        async with session.get(url) as response:
-            if response.status == 200:
-                html = await response.text()
-                soup = BeautifulSoup(html[:50000], 'html.parser')
-                
-                # Extract title
-                title = ""
-                og_title = soup.find('meta', property='og:title')
-                if og_title:
-                    title = og_title.get('content', '')
-                elif soup.title:
-                    title = soup.title.string
-                
-                # Extract description
-                desc = ""
-                og_desc = soup.find('meta', property='og:description')
-                if og_desc:
-                    desc = og_desc.get('content', '')
-                
-                title = title.strip() if title else extract_title_from_url(url)
-                
-                # Generate filename and tags
-                filename = generate_filename(title)
-                tags = generate_tags(url, title, desc)
-                
-                return {
-                    'title': title,
-                    'description': desc,
-                    'filename': filename,
-                    'tags': tags,
-                    'url': url
-                }
+        response = requests.get(url, timeout=5, headers={'User-Agent': 'Mozilla/5.0'})
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text[:50000], 'html.parser')
+            
+            # Extract title
+            title = ""
+            og_title = soup.find('meta', property='og:title')
+            if og_title:
+                title = og_title.get('content', '')
+            elif soup.title:
+                title = soup.title.string
+            
+            # Extract description
+            desc = ""
+            og_desc = soup.find('meta', property='og:description')
+            if og_desc:
+                desc = og_desc.get('content', '')
+            
+            title = title.strip() if title else extract_title_from_url(url)
+            
+            # Generate filename and tags
+            filename = generate_filename(title)
+            tags = generate_tags(url, title, desc)
+            
+            return {
+                'title': title,
+                'description': desc,
+                'filename': filename,
+                'tags': tags,
+                'url': url
+            }
     except:
         pass
     
@@ -150,7 +135,6 @@ def generate_filename(title: str) -> str:
     
     return filename.lower()
 
-@lru_cache(maxsize=256)
 def generate_tags(url: str, title: str, content: str) -> list:
     """Generate tags"""
     tags = set()
