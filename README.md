@@ -1,7 +1,7 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNOOBGLITCH%2Ftelegraamsaverbot&env=BOT_TOKEN,API_ID,API_HASH&envDescription=Telegram%20bot%20credentials%20required&envLink=https%3A%2F%2Fgithub.com%2FNOOBGLITCH%2Ftelegraamsaverbot%23-setup-instructions&project-name=mindvault-bot&repository-name=mindvault-bot)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNOOBGLITCH%2Ftelegraamsaverbot&env=BOT_TOKEN&envDescription=Get%20your%20bot%20token%20from%20@BotFather&project-name=mindvault-bot&repository-name=mindvault-bot)
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NOOBGLITCH/telegraamsaverbot)
 
-Personal knowledge vault bot built with Pyrogram. Save URLs, notes, and messages with automatic tagging and export.
+Personal knowledge vault bot built with Flask and Telegram Bot API. Save URLs, notes, and messages with automatic tagging and export.
 
 ## ✨ Features
 
