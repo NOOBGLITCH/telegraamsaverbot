@@ -1,6 +1,6 @@
 """
 Configuration module for serverless webhook
-Simplified for webhook-only deployment
+Environment variables are provided directly by Vercel/Netlify
 """
 
 import os
@@ -41,3 +41,4 @@ BLOCKED_IP_PATTERNS = [
     r"^192\.168\.",
     r"^localhost",
 ]
+
