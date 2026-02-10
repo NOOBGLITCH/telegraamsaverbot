@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: telegram_formatter_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Mount session files to persist bot session
+      - ./sessions:/app/sessions
+    environment:
+      - PYTHONUNBUFFERED=1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

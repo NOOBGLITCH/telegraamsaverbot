@@ -1,157 +1,221 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNOOBGLITCH%2Ftelegraamsaverbot&env=BOT_TOKEN&envDescription=Get%20your%20bot%20token%20from%20@BotFather&project-name=mindvault-bot&repository-name=mindvault-bot)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NOOBGLITCH/telegraamsaverbot)
+# Telegram Content Formatter Bot 🤖
 
-Personal knowledge vault bot built with Flask and Telegram Bot API. Save URLs, notes, and messages with automatic tagging and export.
+A stateless, serverless Telegram bot that instantly formats content, extracts metadata from URLs, and generates smart tags.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/NOOBGLITCH/telegraamsaverbot&env=BOT_TOKEN&envDescription=Telegram%20Bot%20Token%20from%20BotFather&project-name=telegram-content-bot&repository-name=telegram-content-bot)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NOOBGLITCH/telegraamsaverbot)
 
 ## ✨ Features
 
-- 📌 Save URLs with automatic metadata extraction
-- 📝 Save text notes and forwarded messages  
-- 🏷️ Automatic tagging (domain + keyword based)
-- 📦 Export as organized Markdown ZIP
-- 💾 Daily automatic backups
-- 🚀 Serverless deployment on Vercel
+- 🔗 **URL Metadata Extraction** - Automatically fetches titles and descriptions from links
+- 🏷️ **Smart Tag Generation** - AI-powered tag generation based on content
+- 📝 **Content Formatting** - Beautiful HTML formatting for all messages
+- 🕐 **IST Timestamps** - Automatic timestamp in Indian Standard Time
+- 🔒 **Privacy First** - Stateless design, no data storage
+- ⚡ **Serverless** - Deploy to Vercel/Netlify in one click
+- 🎯 **Media Support** - Handles photos, videos, documents with captions
 
-## 🚀 Quick Deploy
+## 🚀 Quick Start
 
-### One-Click Deploy
+### 1. Get a Bot Token
 
-Click the button above to deploy to Vercel. You'll need:
-
-1. **BOT_TOKEN** - Get from [@BotFather](https://t.me/botfather)
-2. **API_ID** - Get from [my.telegram.org](https://my.telegram.org)
-3. **API_HASH** - Get from [my.telegram.org](https://my.telegram.org)
-
-### After Deployment
-
-1. Visit `https://your-app.vercel.app/api/setWebhook` to configure the webhook
-2. Start chatting with your bot!
-
-## 📋 Setup Instructions
-
-### Get Telegram Credentials
-
-#### 1. Bot Token
 1. Message [@BotFather](https://t.me/botfather) on Telegram
 2. Send `/newbot` and follow instructions
 3. Copy your bot token
 
-#### 2. API Credentials
-1. Go to [my.telegram.org](https://my.telegram.org)
-2. Log in with your phone number
-3. Navigate to "API development tools"
-4. Create a new application
-5. Copy your `API_ID` and `API_HASH`
+### 2. Deploy (Choose One)
 
-### Environment Variables
+#### Option A: Deploy to Vercel (Recommended)
 
-```env
-BOT_TOKEN=your_bot_token_from_botfather
-API_ID=your_api_id_from_my_telegram_org
-API_HASH=your_api_hash_from_my_telegram_org
-TZ=Asia/Kolkata
+Click the button above or:
+
+```bash
+npm install -g vercel
+git clone https://github.com/NOOBGLITCH/telegraamsaverbot.git
+cd telegraamsaverbot
+vercel --prod
 ```
 
-## 💬 Commands
+#### Option B: Deploy to Netlify
 
-- `/start` - Start the bot
-- `/help` - Show help message
-- `/save <content>` - Save URL or text
-- `/export` - Export all data as Markdown ZIP
-- `/backup now` - Create manual backup
-- `/backup on/off` - Toggle daily backups
-- `/backup status` - Check backup status
+Click the button above or use Netlify CLI.
 
-## 📖 Usage
+### 3. Set Environment Variables
 
-Just send any content to the bot:
-
-- **URLs**: `https://example.com/article`
-- **Notes**: `Remember to review the PR`
-- **Forward** any message
-
-The bot will automatically:
-- Extract metadata from URLs
-- Generate smart filenames
-- Apply relevant tags
-- Save everything for export
-
-## 🏗️ Architecture
+In your deployment platform dashboard, add:
 
 ```
-Telegram → Webhook → Vercel Serverless Function → Process → JSON Storage
+BOT_TOKEN=your_bot_token_here
+TIMEZONE=Asia/Kolkata
 ```
 
-**Serverless Functions:**
-- `/api/webhook` - Receives Telegram updates
-- `/api/setWebhook` - Configures webhook URL
-- `/api/cron/backup` - Daily backup cron job
-- `/` - Health check
+### 4. Register Webhook
 
-## 📁 Project Structure
-
+```bash
+cd scripts
+pip install httpx
+python set_webhook.py
 ```
-mindvault/
-├── api/                    # Vercel serverless functions
-│   ├── webhook.py          # Main webhook handler
-│   ├── setWebhook.py       # Webhook configuration
-│   ├── index.py            # Health check
-│   └── cron/
-│       └── backup.py       # Daily backup cron
-├── main.py                 # Core bot logic
-├── config.py               # Configuration
-├── handlers.py             # Command handlers
-├── processor.py            # Content processing
-├── storage.py              # JSON storage
-├── backup.py               # Export & backup
-├── data/                   # Data storage
-│   ├── items/              # Saved items
-│   ├── users/              # User settings
-│   └── exports/            # Exports
-└── vercel.json             # Vercel configuration
+
+Enter your webhook URL: `https://your-app.vercel.app/api/webhook`
+
+### 5. Start Using!
+
+Send any message or URL to your bot on Telegram! 🎉
+
+## 📖 Documentation
+
+- [Deployment Guide](DEPLOYMENT.md) - Detailed deployment instructions
+- [Quick Start](QUICKSTART.md) - Get started in 5 minutes
+
+## 🛠️ Tech Stack
+
+- **Framework:** FastAPI (async webhook handler)
+- **Deployment:** Vercel Serverless Functions
+- **HTTP Client:** httpx (async)
+- **HTML Parsing:** BeautifulSoup4 + lxml
+- **Architecture:** Stateless, no database required
+
+## 📋 What It Does
+
+Send the bot:
+- **URLs** → Extracts metadata and formats beautifully
+- **Text** → Structures with tags and timestamps
+- **Media + Caption** → Formats with smart tags
+- **Plain text** → Organizes with auto-generated tags
+
+Example response:
+```
+📌 Content Saved
+
+📝 Title:
+How to Build Serverless Telegram Bots
+
+📄 Description:
+Complete guide to building and deploying serverless Telegram bots...
+
+🔗 Link:
+https://example.com/article
+
+🏷️ Tags:
+#Tutorial #Telegram #Serverless #Python
+
+📅 Date: 10 Feb 2026
+⏰ Time: 11:35 AM IST
 ```
 
 ## 🔧 Local Development
 
 ```bash
 # Clone repository
-git clone https://github.com/NOOBGLITCH/telegraamsaverbot
+git clone https://github.com/NOOBGLITCH/telegraamsaverbot.git
 cd telegraamsaverbot
 
 # Install dependencies
+cd api
 pip install -r requirements.txt
 
-# Create .env file
-cp .env.example .env
-# Edit .env with your credentials
+# Set environment variables
+export BOT_TOKEN=your_token_here
 
 # Run locally
-python main.py
+uvicorn webhook:app --reload --port 8000
+
+# Test with ngrok
+ngrok http 8000
 ```
 
-## 🌐 How It Works (Serverless)
+## 📁 Project Structure
 
-1. **Webhook Mode**: Bot receives updates via HTTPS webhook (no polling)
-2. **Stateless**: Each request is independent, no persistent connections
-3. **In-Memory Sessions**: Pyrogram sessions created per request
-4. **JSON Storage**: Data stored in JSON files (serverless-compatible)
-5. **Cron Jobs**: Daily backups via Vercel Cron
+```
+telegraamsaverbot/
+├── api/
+│   ├── webhook.py          # Main FastAPI webhook handler
+│   ├── config.py           # Configuration
+│   ├── requirements.txt    # Dependencies
+│   └── utils/              # Utility modules
+│       ├── metadata_fetcher.py
+│       ├── tag_generator.py
+│       ├── url_extractor.py
+│       └── formatter.py
+├── scripts/
+│   └── set_webhook.py      # Webhook registration script
+├── vercel.json             # Vercel configuration
+├── DEPLOYMENT.md           # Deployment guide
+└── README.md               # This file
+```
 
-**Benefits:**
-- ✅ Zero server costs (Vercel free tier)
-- ✅ Auto-scaling
-- ✅ No server management
-- ✅ Global CDN
-- ✅ HTTPS by default
+## 🌟 Key Features Explained
 
-## 📝 License
+### Metadata Extraction
+- Supports Open Graph, Twitter Cards, and standard meta tags
+- Handles redirects automatically
+- Timeout protection (5s default)
+- Security: Blocks private IP ranges
 
-MIT
+### Tag Generation
+- Domain-based tags (YouTube, GitHub, etc.)
+- TF-IDF-like keyword scoring
+- Priority keywords for tech topics
+- Category detection
+- Media type tags
+
+### Formatting
+- HTML formatting for Telegram
+- Emoji indicators
+- Clean, readable layout
+- IST timezone support
+
+## 🔒 Privacy & Security
+
+- ✅ **No data storage** - Processes and forgets immediately
+- ✅ **No user tracking** - Stateless architecture
+- ✅ **No database** - Zero persistence
+- ✅ **Secure** - Blocks private IP ranges
+- ✅ **HTTPS only** - Vercel provides SSL
+
+## 📊 Performance
+
+- ⚡ Response time: < 3 seconds
+- 🚀 Serverless auto-scaling
+- 💰 Free tier friendly
+- 🌍 Global CDN (Vercel)
 
 ## 🤝 Contributing
 
-Pull requests welcome!
+Contributions welcome! Please:
 
-## ⭐ Support
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-If you find this useful, give it a star!
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## 🙏 Acknowledgments
+
+- Built with [FastAPI](https://fastapi.tiangolo.com/)
+- Deployed on [Vercel](https://vercel.com/)
+- Inspired by serverless architecture patterns
+
+## 📞 Support
+
+- 🐛 [Report Issues](https://github.com/NOOBGLITCH/telegraamsaverbot/issues)
+- 💬 [Discussions](https://github.com/NOOBGLITCH/telegraamsaverbot/discussions)
+- 📧 Contact: [Your Email]
+
+## 🎯 Roadmap
+
+- [ ] Multi-language support
+- [ ] Custom tag templates
+- [ ] Webhook security token
+- [ ] Rate limiting
+- [ ] Analytics dashboard
+
+---
+
+**Made with ❤️ for the Telegram community**
+
+⭐ Star this repo if you find it useful!
