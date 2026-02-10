@@ -1,4 +1,4 @@
 from .webhook import app
 
-# Export for Vercel
-handler = app
+# Vercel will automatically detect 'app'
+__all__ = ["app"]
