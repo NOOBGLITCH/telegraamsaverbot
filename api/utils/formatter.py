@@ -6,7 +6,7 @@ Optimized for Telegram Bot API HTML format
 from datetime import datetime
 from typing import List, Optional
 import pytz
-import config
+from .. import config
 
 
 def format_response(

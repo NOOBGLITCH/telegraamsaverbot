@@ -6,7 +6,7 @@ Extracts title and description using Open Graph tags and HTML meta tags
 import httpx
 from bs4 import BeautifulSoup
 from typing import Dict, Optional
-import config
+from .. import config
 
 
 async def fetch_metadata(url: str) -> Dict[str, str]:

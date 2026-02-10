@@ -7,7 +7,7 @@ import re
 from typing import List, Set, Optional, Dict, Tuple
 from urllib.parse import urlparse
 from collections import Counter
-import config
+from .. import config
 
 
 # Enhanced stop words (expanded list)

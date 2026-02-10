@@ -5,7 +5,7 @@ URL extraction and validation utilities
 import re
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from typing import Optional, List
-import config
+from .. import config
 
 
 def extract_urls(text: str) -> List[str]:
