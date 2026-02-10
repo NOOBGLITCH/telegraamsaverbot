@@ -100,7 +100,7 @@ async def root():
     return {"status": "ok", "bot": "Telegram Content Formatter", "mode": "webhook"}
 
 
-@app.post("/api/webhook")
+@app.post("/")
 async def webhook(request: Request):
     """
     Main webhook handler for Telegram updates
