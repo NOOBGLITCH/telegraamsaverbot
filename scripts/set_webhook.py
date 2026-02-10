@@ -5,7 +5,9 @@ Run this after deploying to Vercel
 
 import os
 import sys
-import httpx
+import json
+import urllib.request
+import urllib.parse
 
 def set_webhook(bot_token: str, webhook_url: str):
     """
@@ -16,11 +18,13 @@ def set_webhook(bot_token: str, webhook_url: str):
         webhook_url: Full webhook URL (e.g., https://your-app.vercel.app/api/webhook)
     """
     api_url = f"https://api.telegram.org/bot{bot_token}/setWebhook"
+    data = json.dumps({"url": webhook_url}).encode('utf-8')
+    req = urllib.request.Request(api_url, data=data, headers={'Content-Type': 'application/json'})
     
     try:
-        response = httpx.post(api_url, json={"url": webhook_url}, timeout=10.0)
-        result = response.json()
-        
+        with urllib.request.urlopen(req, timeout=10) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            
         if result.get("ok"):
             print("✅ Webhook set successfully!")
             print(f"📍 Webhook URL: {webhook_url}")
@@ -40,8 +44,8 @@ def get_webhook_info(bot_token: str):
     api_url = f"https://api.telegram.org/bot{bot_token}/getWebhookInfo"
     
     try:
-        response = httpx.get(api_url, timeout=10.0)
-        result = response.json()
+        with urllib.request.urlopen(api_url, timeout=10) as response:
+            result = json.loads(response.read().decode('utf-8'))
         
         if result.get("ok"):
             info = result.get("result", {})
@@ -71,11 +75,8 @@ def main():
         sys.exit(1)
     
     # Get webhook URL
-    webhook_url = input("Enter your webhook URL (e.g., https://your-app.vercel.app/api/webhook): ").strip()
-    
-    if not webhook_url:
-        print("❌ Webhook URL is required")
-        sys.exit(1)
+    default_url = "https://mindvault-copy.vercel.app/api/webhook"
+    webhook_url = input(f"Enter your webhook URL [{default_url}]: ").strip() or default_url
     
     # Set webhook
     print("\n🔧 Setting webhook...")
