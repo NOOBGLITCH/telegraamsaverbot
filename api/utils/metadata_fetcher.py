@@ -31,6 +31,12 @@ async def fetch_metadata(url: str) -> Dict[str, str]:
     }
     
     try:
+        # Special handling for YouTube URLs (use oEmbed)
+        if 'youtube.com' in url or 'youtu.be' in url:
+            youtube_metadata = await _fetch_youtube_oembed(url)
+            if youtube_metadata:
+                return youtube_metadata
+
         async with httpx.AsyncClient(
             timeout=config.METADATA_TIMEOUT,
             follow_redirects=True,
@@ -67,6 +73,32 @@ async def fetch_metadata(url: str) -> Dict[str, str]:
         pass
     
     return metadata
+
+
+async def _fetch_youtube_oembed(url: str) -> Optional[Dict[str, str]]:
+    """
+    Fetch metadata from YouTube oEmbed API
+    Reliable way to get video title and author
+    """
+    oembed_url = f"https://www.youtube.com/oembed?url={url}&format=json"
+    
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(oembed_url)
+            if response.status_code == 200:
+                data = response.json()
+                title = data.get('title')
+                author = data.get('author_name')
+                
+                if title:
+                    return {
+                        'title': title,
+                        'description': f"Video by {author}" if author else "YouTube Video"
+                    }
+    except Exception:
+        pass
+        
+    return None
 
 
 def _extract_title(soup: BeautifulSoup) -> Optional[str]:
