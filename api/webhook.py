@@ -259,4 +259,4 @@ Questions? Just send me content and see the magic! ✨
 
 
 # Vercel serverless function handler
-handler = app
+# handler = app (Using 'app' directly)
